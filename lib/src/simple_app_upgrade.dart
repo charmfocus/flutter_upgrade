@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_upgrade/src/app_market.dart';
-
 import 'package:flutter_upgrade/src/flutter_upgrade.dart';
 import 'package:flutter_upgrade/src/liquid_progress_indicator.dart';
 
@@ -11,23 +10,25 @@ import 'package:flutter_upgrade/src/liquid_progress_indicator.dart';
 /// des:app升级提示控件
 ///
 class SimpleAppUpgradeWidget extends StatefulWidget {
-  const SimpleAppUpgradeWidget(
-      {@required this.title,
-      this.titleStyle,
-      @required this.contents,
-      this.contentStyle,
-      this.cancelText,
-      this.cancelTextStyle,
-      this.okText,
-      this.okTextStyle,
-      this.okBackgroundColors,
-      this.progressBar,
-      this.progressBarColor,
-      this.borderRadius = 10,
-      this.downloadUrl,
-      this.force = false,
-      this.iosAppId,
-      this.appMarketInfo});
+  const SimpleAppUpgradeWidget({
+    @required this.title,
+    this.titleStyle,
+    @required this.contents,
+    this.contentStyle,
+    this.cancelText,
+    this.cancelTextStyle,
+    this.okText,
+    this.okTextStyle,
+    this.okBackgroundColors,
+    this.progressBar,
+    this.progressBarColor,
+    this.borderRadius = 10,
+    this.downloadUrl,
+    this.force = false,
+    this.iosAppId,
+    this.appMarketInfo,
+    this.onDownloaded,
+  });
 
   ///
   /// 升级标题
@@ -109,6 +110,8 @@ class SimpleAppUpgradeWidget extends StatefulWidget {
   /// 如果不指定将会弹出提示框，让用户选择哪一个应用市场。
   ///
   final AppMarketInfo appMarketInfo;
+
+  final Function onDownloaded;
 
   @override
   State<StatefulWidget> createState() => _SimpleAppUpgradeWidget();
@@ -320,6 +323,10 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
         setState(() {});
         if (_downloadProgress == 1) {
           //下载完成，跳转到程序安装界面
+          if (widget.onDownloaded != null) {
+            widget.onDownloaded();
+          }
+          Navigator.of(context).pop();
           FlutterUpgrade.installAppForAndroid(path);
         }
       });

@@ -50,6 +50,7 @@ class AppUpgrade {
     double borderRadius = 20.0,
     String iosAppId,
     AppMarketInfo appMarketInfo,
+    Function onDownloaded,
   }) {
     future.then((AppUpgradeInfo appUpgradeInfo) {
       if (appUpgradeInfo != null && appUpgradeInfo.title != null) {
@@ -71,6 +72,7 @@ class AppUpgrade {
             progressBarColor: progressBarColor,
             iosAppId: iosAppId,
             appMarketInfo: appMarketInfo,
+            onDownloaded: onDownloaded,
           );
         });
       }
@@ -83,20 +85,24 @@ class AppUpgrade {
   /// 展示app升级提示框
   ///
   static _showUpgradeDialog(
-      BuildContext context, String title, List<String> contents,
-      {String apkDownloadUrl,
-      bool force = false,
-      TextStyle titleStyle,
-      TextStyle contentStyle,
-      String cancelText,
-      TextStyle cancelTextStyle,
-      String okText,
-      TextStyle okTextStyle,
-      List<Color> okBackgroundColors,
-      Color progressBarColor,
-      double borderRadius = 20.0,
-      String iosAppId,
-      AppMarketInfo appMarketInfo}) {
+    BuildContext context,
+    String title,
+    List<String> contents, {
+    String apkDownloadUrl,
+    bool force = false,
+    TextStyle titleStyle,
+    TextStyle contentStyle,
+    String cancelText,
+    TextStyle cancelTextStyle,
+    String okText,
+    TextStyle okTextStyle,
+    List<Color> okBackgroundColors,
+    Color progressBarColor,
+    double borderRadius = 20.0,
+    String iosAppId,
+    AppMarketInfo appMarketInfo,
+    Function onDownloaded,
+  }) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -125,6 +131,7 @@ class AppUpgrade {
                 force: force,
                 iosAppId: iosAppId,
                 appMarketInfo: appMarketInfo,
+                onDownloaded: onDownloaded,
               ));
         });
   }
