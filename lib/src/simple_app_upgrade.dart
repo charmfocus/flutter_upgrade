@@ -13,8 +13,8 @@ class SimpleAppUpgradeWidget extends StatefulWidget {
   const SimpleAppUpgradeWidget({
     @required this.title,
     this.titleStyle,
-    @required this.contents,
-    this.contentStyle,
+    @required this.description,
+    this.descriptionStyle,
     this.cancelText,
     this.cancelTextStyle,
     this.okText,
@@ -43,12 +43,12 @@ class SimpleAppUpgradeWidget extends StatefulWidget {
   ///
   /// 升级提示内容
   ///
-  final List<String> contents;
+  final String description;
 
   ///
   /// 提示内容样式
   ///
-  final TextStyle contentStyle;
+  final TextStyle descriptionStyle;
 
   ///
   /// 下载进度条
@@ -175,16 +175,15 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   ///
   _buildAppInfo() {
     return Container(
-        padding: EdgeInsets.only(left: 15, right: 15, bottom: 30),
-        height: 200,
-        child: ListView(
-          children: widget.contents.map((f) {
-            return Text(
-              f,
-              style: widget.contentStyle ?? TextStyle(),
-            );
-          }).toList(),
-        ));
+      padding: EdgeInsets.only(left: 15, right: 15, bottom: 30),
+      height: 200,
+      child: SingleChildScrollView(
+        child: Text(
+          widget.description,
+          style: widget.descriptionStyle ?? TextStyle(),
+        ),
+      ),
+    );
   }
 
   ///

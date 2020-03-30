@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
         okText: '马上升级',
         okTextStyle: TextStyle(color: Colors.red),
         titleStyle: TextStyle(fontSize: 30),
-        contentStyle: TextStyle(fontSize: 18),
+        descriptionStyle: TextStyle(fontSize: 18),
         progressBarColor: Colors.lightBlue.withOpacity(.4),
         borderRadius: 15,
         iosAppId: 'id88888888',
@@ -73,13 +73,10 @@ class _HomeState extends State<Home> {
   Future<AppUpgradeInfo> _checkAppInfo() {
     return Future.value(AppUpgradeInfo(
       title: '新版本V1.1.1',
-      contents: [
-        '1、支持立体声蓝牙耳机，同时改善配对性能',
-        '2、提供屏幕虚拟键盘',
-        '3、更简洁更流畅，使用起来更快',
-        '4、修复一些软件在使用时自动退出bug',
-        '5、新增加了分类查看功能'
-      ],
+      description: '''1、支持立体声蓝牙耳机，同时改善配对性能2、提供屏幕虚拟键盘
+3、更简洁更流畅，使用起来更快
+4、修复一些软件在使用时自动退出bug
+5、新增加了分类查看功能''',
       apkDownloadUrl: 'https://dl.gb-cdn.gbshop.cn/apk/xxx.apk',
       force: false,
     ));

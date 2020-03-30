@@ -16,7 +16,7 @@ class AppUpgrade {
   ///
   /// `titleStyle`：title 文字的样式
   ///
-  /// `contentStyle`：版本信息内容文字样式
+  /// `descriptionStyle`：版本信息内容文字样式
   ///
   /// `cancelText`：取消按钮文字，默认"取消"
   ///
@@ -40,7 +40,7 @@ class AppUpgrade {
     BuildContext context,
     Future<AppUpgradeInfo> future, {
     TextStyle titleStyle,
-    TextStyle contentStyle,
+    TextStyle descriptionStyle,
     String cancelText,
     TextStyle cancelTextStyle,
     String okText,
@@ -58,11 +58,11 @@ class AppUpgrade {
           _showUpgradeDialog(
             context,
             appUpgradeInfo.title,
-            appUpgradeInfo.contents,
+            appUpgradeInfo.description,
             apkDownloadUrl: appUpgradeInfo.apkDownloadUrl,
             force: appUpgradeInfo.force,
             titleStyle: titleStyle,
-            contentStyle: contentStyle,
+            descriptionStyle: descriptionStyle,
             cancelText: cancelText,
             cancelTextStyle: cancelTextStyle,
             okBackgroundColors: okBackgroundColors,
@@ -87,11 +87,11 @@ class AppUpgrade {
   static _showUpgradeDialog(
     BuildContext context,
     String title,
-    List<String> contents, {
+    String description, {
     String apkDownloadUrl,
     bool force = false,
     TextStyle titleStyle,
-    TextStyle contentStyle,
+    TextStyle descriptionStyle,
     String cancelText,
     TextStyle cancelTextStyle,
     String okText,
@@ -114,8 +114,8 @@ class AppUpgrade {
               child: SimpleAppUpgradeWidget(
                 title: title,
                 titleStyle: titleStyle,
-                contents: contents,
-                contentStyle: contentStyle,
+                description: description,
+                descriptionStyle: descriptionStyle,
                 cancelText: cancelText,
                 cancelTextStyle: cancelTextStyle,
                 okText: okText,
@@ -148,7 +148,7 @@ class AppInfo {
 class AppUpgradeInfo {
   AppUpgradeInfo(
       {@required this.title,
-      @required this.contents,
+      @required this.description,
       this.apkDownloadUrl,
       this.force = false});
 
@@ -160,7 +160,7 @@ class AppUpgradeInfo {
   ///
   /// 升级内容
   ///
-  final List<String> contents;
+  final String description;
 
   ///
   /// apk下载url
