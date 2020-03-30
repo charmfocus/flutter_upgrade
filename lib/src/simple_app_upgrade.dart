@@ -165,7 +165,7 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   ///
   _buildTitle() {
     return Padding(
-        padding: EdgeInsets.only(top: 20, bottom: 30),
+        padding: EdgeInsets.symmetric(vertical: 16),
         child: Text(widget.title ?? '',
             style: widget.titleStyle ?? TextStyle(fontSize: 22)));
   }
@@ -175,12 +175,14 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   ///
   _buildAppInfo() {
     return Container(
-      padding: EdgeInsets.only(left: 15, right: 15, bottom: 30),
+      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
       height: 200,
+      alignment: Alignment.topLeft,
       child: SingleChildScrollView(
         child: Text(
           widget.description,
           style: widget.descriptionStyle ?? TextStyle(),
+          textAlign: TextAlign.left,
         ),
       ),
     );
