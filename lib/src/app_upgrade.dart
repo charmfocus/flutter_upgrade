@@ -18,9 +18,7 @@ class AppUpgrade {
   ///
   /// `descriptionStyle`：版本信息内容文字样式
   ///
-  /// `cancelText`：取消按钮文字，默认"取消"
-  ///
-  /// `cancelTextStyle`：取消按钮文字样式
+  /// `cancel`：取消按钮组件，默认"Icon(Icons.close)"
   ///
   /// `okText`：升级按钮文字，默认"立即体验"
   ///
@@ -41,8 +39,7 @@ class AppUpgrade {
     Future<AppUpgradeInfo> future, {
     TextStyle titleStyle,
     TextStyle descriptionStyle,
-    String cancelText,
-    TextStyle cancelTextStyle,
+    Widget cancel,
     String okText,
     TextStyle okTextStyle,
     List<Color> okBackgroundColors,
@@ -63,8 +60,7 @@ class AppUpgrade {
             force: appUpgradeInfo.force,
             titleStyle: titleStyle,
             descriptionStyle: descriptionStyle,
-            cancelText: cancelText,
-            cancelTextStyle: cancelTextStyle,
+            cancel: cancel,
             okBackgroundColors: okBackgroundColors,
             okText: okText,
             okTextStyle: okTextStyle,
@@ -92,7 +88,7 @@ class AppUpgrade {
     bool force = false,
     TextStyle titleStyle,
     TextStyle descriptionStyle,
-    String cancelText,
+    Widget cancel,
     TextStyle cancelTextStyle,
     String okText,
     TextStyle okTextStyle,
@@ -116,8 +112,7 @@ class AppUpgrade {
                 titleStyle: titleStyle,
                 description: description,
                 descriptionStyle: descriptionStyle,
-                cancelText: cancelText,
-                cancelTextStyle: cancelTextStyle,
+                cancel: cancel,
                 okText: okText,
                 okTextStyle: okTextStyle,
                 okBackgroundColors: okBackgroundColors ??
