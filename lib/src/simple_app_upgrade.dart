@@ -126,6 +126,7 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var close = widget.cancel ?? Icon(Icons.close);
     return Container(
       child: Stack(
         children: <Widget>[
@@ -134,7 +135,7 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
             Positioned(
               child: IconButton(
                 padding: EdgeInsets.zero,
-                icon: Icon(Icons.close),
+                icon: close,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
