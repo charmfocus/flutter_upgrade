@@ -15,11 +15,11 @@ class SimpleAppUpgradeWidget extends StatefulWidget {
     this.titleStyle,
     @required this.description,
     this.descriptionStyle,
-    this.cancelText,
-    this.cancelTextStyle,
+    this.cancel,
     this.okText,
     this.okTextStyle,
     this.okBackgroundColors,
+    this.loadingOkBackgroundColor = Colors.white,
     this.progressBar,
     this.progressBarColor,
     this.borderRadius = 10,
@@ -75,15 +75,12 @@ class SimpleAppUpgradeWidget extends StatefulWidget {
   ///
   final List<Color> okBackgroundColors;
 
+  final Color loadingOkBackgroundColor;
+
   ///
   /// 取消控件
   ///
-  final String cancelText;
-
-  ///
-  /// 取消控件样式
-  ///
-  final TextStyle cancelTextStyle;
+  final Widget cancel;
 
   ///
   /// app安装包下载url,没有下载跳转到应用宝等渠道更新
@@ -125,17 +122,26 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   ///
   double _downloadProgress = 0.0;
 
+  bool downloading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Stack(
         children: <Widget>[
           _buildInfoWidget(context),
-          _downloadProgress > 0
-              ? Positioned.fill(child: _buildDownloadProgress())
-              : Container(
-                  height: 10,
-                )
+          if (!widget.force)
+            Positioned(
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              right: 0,
+              top: 0,
+            ),
         ],
       ),
     );
@@ -198,41 +204,8 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
           height: 1,
           color: Colors.grey,
         ),
-        Row(
-          children: <Widget>[
-            widget.force
-                ? Container()
-                : Expanded(
-                    child: _buildCancelActionButton(),
-                  ),
-            Expanded(
-              child: _buildOkActionButton(),
-            ),
-          ],
-        ),
+        _buildOkActionButton(),
       ],
-    );
-  }
-
-  ///
-  /// 取消按钮
-  ///
-  _buildCancelActionButton() {
-    return Ink(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(widget.borderRadius))),
-      child: InkWell(
-        borderRadius:
-            BorderRadius.only(bottomLeft: Radius.circular(widget.borderRadius)),
-        child: Container(
-          height: 45,
-          alignment: Alignment.center,
-          child: Text(widget.cancelText ?? '以后再说',
-              style: widget.cancelTextStyle ?? TextStyle()),
-        ),
-        onTap: () => Navigator.of(context).pop(),
-      ),
     );
   }
 
@@ -240,14 +213,12 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   /// 确定按钮
   ///
   _buildOkActionButton() {
-    var borderRadius =
-        BorderRadius.only(bottomRight: Radius.circular(widget.borderRadius));
-    if (widget.force) {
-      borderRadius = BorderRadius.only(
-          bottomRight: Radius.circular(widget.borderRadius),
-          bottomLeft: Radius.circular(widget.borderRadius));
-    }
-    var _okBackgroundColors = widget.okBackgroundColors;
+    var borderRadius = BorderRadius.only(
+        bottomRight: Radius.circular(widget.borderRadius),
+        bottomLeft: Radius.circular(widget.borderRadius));
+    var _okBackgroundColors = downloading
+        ? [widget.loadingOkBackgroundColor, widget.loadingOkBackgroundColor]
+        : widget.okBackgroundColors;
     if (widget.okBackgroundColors == null ||
         widget.okBackgroundColors.length != 2) {
       _okBackgroundColors = [
@@ -255,23 +226,37 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
         Theme.of(context).primaryColor
       ];
     }
+
+    Widget child;
+    if (!downloading) {
+      child = Text(widget.okText ?? '立即体验',
+          style: widget.okTextStyle ?? TextStyle(color: Colors.white));
+    } else {
+      child = _buildDownloadProgress();
+    }
+
     return Ink(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [_okBackgroundColors[0], _okBackgroundColors[1]]),
-          borderRadius: borderRadius),
       child: InkWell(
         borderRadius: borderRadius,
-        child: Container(
-          height: 45,
-          alignment: Alignment.center,
-          child: Text(widget.okText ?? '立即体验',
-              style: widget.okTextStyle ?? TextStyle(color: Colors.white)),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: AnimatedContainer(
+            height: 45,
+            alignment: Alignment.center,
+            child: child,
+            duration: Duration(seconds: 1),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [_okBackgroundColors[0], _okBackgroundColors[1]]),
+                borderRadius: borderRadius),
+          ),
         ),
         onTap: () {
-          _clickOk();
+          if (!downloading) {
+            _clickOk();
+          }
         },
       ),
     );
@@ -281,13 +266,22 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
   /// 下载进度widget
   ///
   Widget _buildDownloadProgress() {
+    final percentage = _downloadProgress * 100;
     return widget.progressBar ??
         LiquidLinearProgressIndicator(
           value: _downloadProgress,
-          direction: Axis.vertical,
+          direction: Axis.horizontal,
           valueColor: AlwaysStoppedAnimation(widget.progressBarColor ??
               Theme.of(context).primaryColor.withOpacity(0.4)),
-          borderRadius: widget.borderRadius,
+          borderRadius: 0,
+          center: Text(
+            '${percentage.toStringAsFixed(0)}%',
+            style: TextStyle(
+              color: Colors.lightBlueAccent,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         );
   }
 
@@ -307,6 +301,9 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
     }
     String path = await FlutterUpgrade.apkDownloadPath;
     _downloadApk(widget.downloadUrl, '$path/$_downloadApkName');
+    setState(() {
+      downloading = true;
+    });
   }
 
   ///
@@ -321,14 +318,19 @@ class _SimpleAppUpgradeWidget extends State<SimpleAppUpgradeWidget> {
         } else {
           _downloadProgress = count / total.toDouble();
         }
-        setState(() {});
+
         if (_downloadProgress == 1) {
           //下载完成，跳转到程序安装界面
+          setState(() {
+            downloading = false;
+          });
           if (widget.onDownloaded != null) {
             widget.onDownloaded();
           }
           Navigator.of(context).pop();
           FlutterUpgrade.installAppForAndroid(path);
+        } else {
+          setState(() {});
         }
       });
     } catch (e) {

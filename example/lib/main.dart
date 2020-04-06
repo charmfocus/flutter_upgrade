@@ -57,14 +57,14 @@ class _HomeState extends State<Home> {
 
   _checkAppUpgrade() {
     AppUpgrade.appUpgrade(context, _checkAppInfo(),
-        okBackgroundColors: [Colors.blue, Colors.lightBlue],
+        okBackgroundColors: [Colors.blue[400], Colors.lightBlue[400]],
         cancelText: '以后再说',
         cancelTextStyle: TextStyle(color: Colors.grey),
         okText: '马上升级',
-        okTextStyle: TextStyle(color: Colors.red),
+        okTextStyle: TextStyle(color: Colors.white),
         titleStyle: TextStyle(fontSize: 30),
         descriptionStyle: TextStyle(fontSize: 18),
-        progressBarColor: Colors.lightBlue.withOpacity(.4),
+        progressBarColor: Colors.cyan,
         borderRadius: 15,
         iosAppId: 'id88888888',
         appMarketInfo: AppMarket.huaWei);
@@ -77,7 +77,8 @@ class _HomeState extends State<Home> {
 3、更简洁更流畅，使用起来更快
 4、修复一些软件在使用时自动退出bug
 5、新增加了分类查看功能''',
-      apkDownloadUrl: 'https://dl.gb-cdn.gbshop.cn/apk/xxx.apk',
+      apkDownloadUrl:
+          'https://dl.gb-cdn.gbshop.cn/apk/vender-app-v1.0.0+14.apk',
       force: false,
     ));
   }
@@ -104,6 +105,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        FlatButton(
+            onPressed: () {
+              _checkAppUpgrade();
+            },
+            child: Text('更新')),
         Text('packageName:${_appInfo?.packageName}'),
         Text('versionName:${_appInfo?.versionName}'),
         Text('versionCode:${_appInfo?.versionCode}'),
