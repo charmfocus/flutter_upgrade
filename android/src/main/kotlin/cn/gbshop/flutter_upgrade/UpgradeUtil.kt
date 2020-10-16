@@ -46,7 +46,12 @@ fun getAppInfo(context: Context?): HashMap<String, String>? {
         val map = HashMap<String, String>()
         map["packageName"] = packageInfo.packageName
         map["versionName"] = packageInfo.versionName
-        map["versionCode"] = "${packageInfo.versionCode}"
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            "${packageInfo.longVersionCode}"
+        } else {
+            "${packageInfo.versionCode}"
+        }
+        map["versionCode"] = versionCode
         return map
     }
     return null
@@ -84,7 +89,7 @@ fun toMarket(context: Context, marketPackageName: String?, marketClassName: Stri
         if (nameEmpty || classEmpty) {
             goToMarket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         } else {
-            goToMarket.setClassName(marketPackageName, marketClassName)
+            goToMarket.setClassName(marketPackageName ?: "", marketClassName ?: "")
         }
         context.startActivity(goToMarket)
     } catch (e: ActivityNotFoundException) {
@@ -115,7 +120,7 @@ fun getInstallMarket(context: Context, packages: List<String>?): List<String> {
 fun isPackageExist(context: Context, packageName: String?): Boolean {
     val manager = context.packageManager
     return try {
-        manager.getPackageInfo(packageName,
+        manager.getPackageInfo(packageName ?: "",
                 PackageManager.GET_ACTIVITIES)
         true
     } catch (e: PackageManager.NameNotFoundException) {
