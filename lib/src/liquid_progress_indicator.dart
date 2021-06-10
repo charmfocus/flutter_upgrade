@@ -3,36 +3,36 @@ import 'package:flutter_upgrade/src/wave.dart';
 
 class LiquidLinearProgressIndicator extends ProgressIndicator {
   ///The width of the border, if this is set [borderColor] must also be set.
-  final double borderWidth;
+  final double? borderWidth;
 
   ///The color of the border, if this is set [borderWidth] must also be set.
-  final Color borderColor;
+  final Color? borderColor;
 
   ///The radius of the border.
-  final double borderRadius;
+  final double? borderRadius;
 
   ///The widget to show in the center of the progress indicator.
-  final Widget center;
+  final Widget? center;
 
   ///The direction the liquid travels.
   final Axis direction;
 
   LiquidLinearProgressIndicator({
-    Key key,
+    Key? key,
     double value = 0.5,
-    Color backgroundColor,
-    Animation<Color> valueColor,
+    Color? backgroundColor,
+    Animation<Color>? valueColor,
     this.borderWidth,
     this.borderColor,
     this.borderRadius,
     this.center,
     this.direction = Axis.horizontal,
   }) : super(
-    key: key,
-    value: value,
-    backgroundColor: backgroundColor,
-    valueColor: valueColor,
-  ) {
+          key: key,
+          value: value,
+          backgroundColor: backgroundColor,
+          valueColor: valueColor,
+        ) {
     if (borderWidth != null && borderColor == null ||
         borderColor != null && borderWidth == null) {
       throw ArgumentError("borderWidth and borderColor should both be set.");
@@ -43,7 +43,7 @@ class LiquidLinearProgressIndicator extends ProgressIndicator {
       backgroundColor ?? Color(0x0000BFFF); //Theme.of(context).backgroundColor;
 
   Color _getValueColor(BuildContext context) =>
-      valueColor?.value ?? Color(0x6600BFFF);//Theme.of(context).accentColor;
+      valueColor?.value ?? Color(0x6600BFFF); //Theme.of(context).accentColor;
 
   @override
   State<StatefulWidget> createState() => _LiquidLinearProgressIndicatorState();
@@ -84,9 +84,9 @@ class _LiquidLinearProgressIndicatorState
 
 class _LinearPainter extends CustomPainter {
   final Color color;
-  final double radius;
+  final double? radius;
 
-  _LinearPainter({@required this.color, @required this.radius});
+  _LinearPainter({required this.color, required this.radius});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -104,14 +104,14 @@ class _LinearPainter extends CustomPainter {
 }
 
 class _LinearBorderPainter extends CustomPainter {
-  final Color color;
-  final double width;
-  final double radius;
+  final Color? color;
+  final double? width;
+  final double? radius;
 
   _LinearBorderPainter({
-    @required this.color,
-    @required this.width,
-    @required this.radius,
+    required this.color,
+    required this.width,
+    required this.radius,
   });
 
   @override
@@ -121,15 +121,15 @@ class _LinearBorderPainter extends CustomPainter {
     }
 
     final paint = Paint()
-      ..color = color
+      ..color = color!
       ..style = PaintingStyle.stroke
-      ..strokeWidth = width;
+      ..strokeWidth = width!;
     final alteredRadius = radius ?? 0;
     canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-              width / 2, width / 2, size.width - width, size.height - width),
-          Radius.circular(alteredRadius - width ?? 0),
+          Rect.fromLTWH(width! / 2, width! / 2, size.width - width!,
+              size.height - width!),
+          Radius.circular(alteredRadius - width!),
         ),
         paint);
   }
@@ -137,14 +137,14 @@ class _LinearBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_LinearBorderPainter oldDelegate) =>
       color != oldDelegate.color ||
-          width != oldDelegate.width ||
-          radius != oldDelegate.radius;
+      width != oldDelegate.width ||
+      radius != oldDelegate.radius;
 }
 
 class _LinearClipper extends CustomClipper<Path> {
-  final double radius;
+  final double? radius;
 
-  _LinearClipper({@required this.radius});
+  _LinearClipper({required this.radius});
 
   @override
   Path getClip(Size size) {
