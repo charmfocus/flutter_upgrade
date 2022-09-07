@@ -32,7 +32,7 @@ public class FlutterUpgradePlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     lateinit var mContext: Context
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      mContext = registrar.activity()
+      mContext = registrar.activity()!!
       val channel = MethodChannel(registrar.messenger(), "flutter_upgrade")
       channel.setMethodCallHandler(FlutterUpgradePlugin())
     }
