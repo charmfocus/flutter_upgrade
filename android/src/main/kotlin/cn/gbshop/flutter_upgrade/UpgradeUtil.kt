@@ -15,27 +15,27 @@ import java.io.File
 /**
  * 更新的文件地址
  */
-const val argumentsUrl: String = "argumentsUrl"
+const val ArgumentsUrl: String = "argumentsUrl"
 
 /**
  * 通知栏标题
  */
-const val argumentsTitle: String = "argumentsTitle"
+const val ArgumentsTitle: String = "argumentsTitle"
 
 /**
  * 通知栏描述
  */
-const val argumentsDescription: String = "argumentsDescription"
+const val ArgumentsDescription: String = "argumentsDescription"
 
 /**
  * 文件存放目录
  */
-const val apkDirector: String = "apks"
+const val ApkDirector: String = "apks"
 
 /**
  * apk文件类型
  */
-const val apkType = "application/vnd.android.package-archive"
+const val ApkType = "application/vnd.android.package-archive"
 
 /**
  * 获取app信息
@@ -60,7 +60,7 @@ fun getAppInfo(context: Context?): HashMap<String, String>? {
 /**
  * 如果手机上安装多个应用市场则弹出对话框，由用户选择进入哪个市场
  */
-fun toMarket(context: Context) {
+fun toMarketChoose(context: Context) {
     try {
         var packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val uri = Uri.parse("market://details?id=${packageInfo.packageName}")
@@ -135,21 +135,21 @@ fun isPackageExist(context: Context, packageName: String?): Boolean {
 fun upgradeAndInstall(call: MethodCall, context: Context): Boolean {
     return try {
         //下载的文件地址
-        val url = call.argument<String>(argumentsUrl)
+        val url = call.argument<String>(ArgumentsUrl)
         //标题
-        val title = call.argument<String>(argumentsTitle)
+        val title = call.argument<String>(ArgumentsTitle)
         //描述
-        val description = call.argument<String>(argumentsDescription)
+        val description = call.argument<String>(ArgumentsDescription)
 
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = DownloadManager.Request(Uri.parse(url))
         //读取apk文件名称
         val fileName = url?.substring(url.lastIndexOf("/") + 1)
         //设置存放路径, 放在应用内部目录
-        request.setDestinationInExternalFilesDir(context, apkDirector, fileName)
+        request.setDestinationInExternalFilesDir(context, ApkDirector, fileName)
 
         //判断apk是否存在, 若存在, 直接安装, 否则下载
-        val filePath = "${context.getExternalFilesDir(apkDirector)?.absolutePath}/$fileName"
+        val filePath = "${context.getExternalFilesDir(ApkDirector)?.absolutePath}/$fileName"
         if (verificationApkInfo(context, filePath)) {
             //安装文件
             installApk(context, File(filePath))
@@ -164,7 +164,7 @@ fun upgradeAndInstall(call: MethodCall, context: Context): Boolean {
         //设置描述
         request.setDescription(description)
         //设置下载类型apk
-        request.setMimeType(apkType)
+        request.setMimeType(ApkType)
         //开始下载
         downloadManager.enqueue(request)
         return true
@@ -202,12 +202,12 @@ fun installApk(context: Context, file: File) {
         //7.0及以上
         val uri = FileProvider.getUriForFile(context, context.applicationInfo.packageName + "" +
                 ".fileprovider", file)
-        intent.setDataAndType(uri, apkType)
+        intent.setDataAndType(uri, ApkType)
 
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     } else {
         //7.0以下, 设置数据
-        intent.setDataAndType(Uri.fromFile(file), apkType)
+        intent.setDataAndType(Uri.fromFile(file), ApkType)
     }
     //启动activity
     context.startActivity(intent)
