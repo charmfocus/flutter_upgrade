@@ -45,7 +45,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  AppInfo _appInfo;
+  AppInfo? _appInfo;
   List<AppMarketInfo> _appMarketList = [];
 
   @override
@@ -56,10 +56,9 @@ class _HomeState extends State<Home> {
   }
 
   _checkAppUpgrade() {
+    List<Color>? bgColors = [Colors.blue[400]!, Colors.lightBlue[400]!];
     AppUpgrade.appUpgrade(context, _checkAppInfo(),
-        okBackgroundColors: [Colors.blue[400], Colors.lightBlue[400]],
-        cancelText: '以后再说',
-        cancelTextStyle: TextStyle(color: Colors.grey),
+        okBackgroundColors: bgColors,
         okText: '马上升级',
         okTextStyle: TextStyle(color: Colors.white),
         titleStyle: TextStyle(fontSize: 30),
@@ -78,7 +77,7 @@ class _HomeState extends State<Home> {
 4、修复一些软件在使用时自动退出bug
 5、新增加了分类查看功能''',
       apkDownloadUrl:
-          'https://dl.gb-cdn.gbshop.cn/apk/vender-app-v1.0.0+14.apk',
+          'https://dl.gb-cdn.gbshop.cn/apk/vender-app-1.0.6+66-stable.apk',
       force: false,
     ));
   }
@@ -92,10 +91,10 @@ class _HomeState extends State<Home> {
 
   _getInstallMarket() async {
     List<String> marketList = await FlutterUpgrade.getInstallMarket();
-    if (marketList != null && marketList.isNotEmpty) {
+    if (marketList.isNotEmpty) {
       var packageName = marketList[0];
-      AppMarketInfo _marketInfo = AppMarket.getBuildInMarket(packageName);
-      print('${_marketInfo.marketName}');
+      AppMarketInfo? _marketInfo = AppMarket.getBuildInMarket(packageName);
+      print('${_marketInfo?.marketName}');
     } else {
       print('not install market!');
     }
@@ -105,7 +104,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        FlatButton(
+        TextButton(
             onPressed: () {
               _checkAppUpgrade();
             },
